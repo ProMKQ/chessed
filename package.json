@@ -1,25 +1,41 @@
 {
-  "name": "chessed",
-  "private": true,
-  "version": "1.0.0",
-  "description": "Play chess against other people online",
-  "workspaces": [
-    "client",
-    "server"
-  ],
-  "scripts": {
-    "build": "npm run build --workspaces",
-    "dev": "npm run dev --workspaces",
-    "start": "npm run start -w server",
-    "lint": "npm run lint --workspaces",
-    "lint:fix": "npm run lint:fix --workspaces",
-    "format": "npm run format --workspaces",
-    "format:check": "npm run format:check --workspaces"
-  },
-  "devDependencies": {
-    "prettier-plugin-brace-style": "^0.9.0"
-  },
-  "engines": {
-    "node": ">=20.0.0"
-  }
+    "name": "chessed",
+    "private": true,
+    "version": "1.0.0",
+    "description": "Play chess against other people online",
+    "workspaces": [
+        "client",
+        "server"
+    ],
+    "scripts": {
+        "build": "npm run build --workspaces",
+        "dev": "npm run dev --workspaces",
+        "start": "npm run start -w server",
+        "lint": "npm run lint --workspaces",
+        "lint:fix": "npm run lint:fix --workspaces",
+        "format": "npm run format --workspaces",
+        "format:check": "npm run format:check --workspaces",
+        "prepare": "husky"
+    },
+    "devDependencies": {
+        "husky": "^9.1.7",
+        "lint-staged": "^16.2.7",
+        "prettier-plugin-brace-style": "^0.9.0"
+    },
+    "lint-staged": {
+        "client/**/*.{js,jsx,ts,tsx}": [
+            "npm exec --workspace client -- eslint --fix",
+            "prettier --write"
+        ],
+        "server/**/*.{js,ts}": [
+            "npm exec --workspace server -- eslint --fix",
+            "prettier --write"
+        ],
+        "**/*.{css,html,json}": [
+            "prettier --write"
+        ]
+    },
+    "engines": {
+        "node": ">=20.0.0"
+    }
 }
