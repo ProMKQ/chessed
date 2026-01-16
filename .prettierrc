@@ -1,0 +1,9 @@
+{
+  "semi": true,
+  "singleQuote": false,
+  "braceStyle": "allman",
+  "tabWidth": 4,
+  "trailingComma": "es5",
+  "printWidth": 120,
+  "plugins": ["prettier-plugin-brace-style"]
+}
