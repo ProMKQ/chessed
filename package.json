@@ -15,6 +15,7 @@
         "lint:fix": "npm run lint:fix --workspaces",
         "format": "npm run format --workspaces",
         "format:check": "npm run format:check --workspaces",
+        "test": "npm run test -w server",
         "prepare": "husky"
     },
     "devDependencies": {
