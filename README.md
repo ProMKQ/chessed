@@ -8,7 +8,7 @@ A real-time multiplayer chess website with automatic matchmaking
 \- Networking: REST for auth, websocket for gameplay  
 
 ### Goals
-\- Fair matchmaking, server-side move validation  
+\- ELO-based matchmaking, server-side move validation  
 \- Persistent accounts and game history  
 \- Performance optimization  
 
