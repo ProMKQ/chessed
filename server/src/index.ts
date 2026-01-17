@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import { createServer } from "http";
 import authRoutes from "./auth/routes.js";
 import { sessionMiddleware } from "./auth/middleware.js";
+import matchmakingRoutes from "./matchmaking/routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,6 +35,8 @@ app.use(express.json());
 app.use(sessionMiddleware);
 
 app.use("/api/auth", authRoutes);
+
+app.use("/api/matchmaking", matchmakingRoutes);
 
 // for testing
 app.get("/api/hello", (_req, res) =>

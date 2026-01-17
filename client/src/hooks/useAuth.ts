@@ -4,6 +4,7 @@ export interface User
 {
     id: string;
     username: string;
+    elo: number;
 }
 
 export interface AuthContextType

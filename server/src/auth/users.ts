@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import crypto from "crypto";
+import { DEFAULT_ELO } from "../elo/elo.js";
 
 export interface User
 {
@@ -7,6 +8,7 @@ export interface User
     username: string;
     password: string;
     salt: string;
+    elo: number;
 }
 
 const ITERATIONS = 100000;
@@ -54,6 +56,7 @@ export async function createUser(username: string, plainPassword: string): Promi
         username,
         password,
         salt,
+        elo: DEFAULT_ELO,
     };
     users.set(id, user);
 
@@ -71,5 +74,18 @@ export function getUserPublicInfo(user: User)
     return {
         id: user.id,
         username: user.username,
+        elo: user.elo,
     };
+}
+
+export async function updateUserElo(userId: string, newElo: number): Promise<boolean>
+{
+    const user = users.get(userId);
+    if (!user)
+    {
+        return false;
+    }
+    user.elo = newElo;
+    users.set(userId, user);
+    return true;
 }
