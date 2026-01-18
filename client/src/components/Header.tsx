@@ -30,7 +30,9 @@ function Header()
                 <div className="header-actions">
                     {user ? (
                         <div className="account-info">
-                            <span className="account-username">{user.username}</span>
+                            <span className="account-username">
+                                {user.username} ({user.elo} ELO)
+                            </span>
                             <button onClick={handleLogout}>Logout</button>
                         </div>
                     ) : (

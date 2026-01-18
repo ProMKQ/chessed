@@ -19,7 +19,7 @@ router.get("/stream", requireAuth, (req: Request, res: Response) =>
     res.setHeader("Connection", "keep-alive");
     res.flushHeaders();
 
-    const connectionId = addToQueue(userId, userInfo.username, (event) =>
+    const connectionId = addToQueue(userId, userInfo.username, userInfo.elo, (event) =>
     {
         res.write(`data: ${JSON.stringify(event)}\n\n`);
 

@@ -7,6 +7,7 @@ export interface QueuedPlayer
     connectionId: string;
     userId: string;
     username: string;
+    elo: number;
     joinedAt: number;
 }
 
@@ -32,6 +33,9 @@ const callbacks: Map<string, EventCallback> = new Map();
 
 const MATCHMAKING_TIMEOUT_MS = 5 * 60 * 1000;
 const CHECK_INTERVAL_MS = 1000;
+const INITIAL_ELO_RANGE = 50;
+const ELO_RANGE_EXPANSION_RATE = 10;
+const MAX_ELO_RANGE = 500;
 
 let loopInterval: NodeJS.Timeout | null = null;
 
@@ -60,36 +64,74 @@ function startMatchmakingLoop(): void
         }
 
         const activePlayers = Array.from(queue.values());
-        while (activePlayers.length >= 2)
+        const matchedPlayerIds = new Set<string>();
+
+        activePlayers.sort((a, b) => a.joinedAt - b.joinedAt);
+
+        for (const player of activePlayers)
         {
-            const player1 = activePlayers.shift()!;
-            const player2 = activePlayers.shift()!;
+            if (matchedPlayerIds.has(player.id)) continue;
 
-            const match: Match = {
-                id: uuidv4(),
-                player1: { userId: player1.userId, username: player1.username },
-                player2: { userId: player2.userId, username: player2.username },
-                createdAt: new Date().toISOString(),
-            };
+            const waitTime = (now - player.joinedAt) / 1000;
+            const currentEloRange = Math.min(INITIAL_ELO_RANGE + waitTime * ELO_RANGE_EXPANSION_RATE, MAX_ELO_RANGE);
 
-            await createSession(match.id, match.player1, match.player2);
+            let bestMatch: QueuedPlayer | null = null;
+            let bestEloDiff = Infinity;
 
-            const callback1 = callbacks.get(player1.userId);
-            const callback2 = callbacks.get(player2.userId);
-
-            if (callback1)
+            for (const opponent of activePlayers)
             {
-                callback1({ type: "matched", match });
-                callbacks.delete(player1.userId);
-            }
-            if (callback2)
-            {
-                callback2({ type: "matched", match });
-                callbacks.delete(player2.userId);
+                if (opponent.id === player.id) continue;
+                if (matchedPlayerIds.has(opponent.id)) continue;
+
+                const eloDiff = Math.abs(player.elo - opponent.elo);
+
+                if (eloDiff <= currentEloRange)
+                {
+                    const opponentWaitTime = (now - opponent.joinedAt) / 1000;
+                    const opponentEloRange = Math.min(
+                        INITIAL_ELO_RANGE + opponentWaitTime * ELO_RANGE_EXPANSION_RATE,
+                        MAX_ELO_RANGE
+                    );
+
+                    if (eloDiff <= opponentEloRange && eloDiff < bestEloDiff)
+                    {
+                        bestMatch = opponent;
+                        bestEloDiff = eloDiff;
+                    }
+                }
             }
 
-            queue.delete(player1.id);
-            queue.delete(player2.id);
+            if (bestMatch)
+            {
+                matchedPlayerIds.add(player.id);
+                matchedPlayerIds.add(bestMatch.id);
+
+                const match: Match = {
+                    id: uuidv4(),
+                    player1: { userId: player.userId, username: player.username },
+                    player2: { userId: bestMatch.userId, username: bestMatch.username },
+                    createdAt: new Date().toISOString(),
+                };
+
+                await createSession(match.id, match.player1, match.player2);
+
+                const callback1 = callbacks.get(player.userId);
+                const callback2 = callbacks.get(bestMatch.userId);
+
+                if (callback1)
+                {
+                    callback1({ type: "matched", match });
+                    callbacks.delete(player.userId);
+                }
+                if (callback2)
+                {
+                    callback2({ type: "matched", match });
+                    callbacks.delete(bestMatch.userId);
+                }
+
+                queue.delete(player.id);
+                queue.delete(bestMatch.id);
+            }
         }
 
         if (queue.size === 0 && loopInterval)
@@ -100,7 +142,7 @@ function startMatchmakingLoop(): void
     }, CHECK_INTERVAL_MS);
 }
 
-export function addToQueue(userId: string, username: string, onEvent: EventCallback): string
+export function addToQueue(userId: string, username: string, elo: number, onEvent: EventCallback): string
 {
     const connectionId = uuidv4();
 
@@ -111,6 +153,7 @@ export function addToQueue(userId: string, username: string, onEvent: EventCallb
         connectionId,
         userId,
         username,
+        elo,
         joinedAt: Date.now(),
     };
 
