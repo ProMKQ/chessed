@@ -6,6 +6,7 @@ import { createServer } from "http";
 import authRoutes from "./auth/routes.js";
 import { sessionMiddleware } from "./auth/middleware.js";
 import matchmakingRoutes from "./matchmaking/routes.js";
+import { initializeGameplayWebSocket } from "./gameplay/websocket.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -56,6 +57,7 @@ if (NODE_ENV === "production")
 }
 
 const httpServer = createServer(app);
+initializeGameplayWebSocket(httpServer);
 
 httpServer.listen(PORT, () =>
 {

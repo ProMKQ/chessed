@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import { createSession } from "../gameplay/sessions.js";
 
 export interface QueuedPlayer
 {
@@ -70,6 +71,8 @@ function startMatchmakingLoop(): void
                 player2: { userId: player2.userId, username: player2.username },
                 createdAt: new Date().toISOString(),
             };
+
+            await createSession(match.id, match.player1, match.player2);
 
             const callback1 = callbacks.get(player1.userId);
             const callback2 = callbacks.get(player2.userId);

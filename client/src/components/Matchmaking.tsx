@@ -1,10 +1,13 @@
 import { useMatchmaking } from "../hooks/useMatchmaking";
 import { useAuth } from "../hooks/useAuth";
+import { useGameplay } from "../gameplay";
+import ChessBoard from "./ChessBoard";
 
 function Matchmaking()
 {
     const { user } = useAuth();
     const { isSearching, match, error, joinMatchmaking, leaveMatchmaking } = useMatchmaking();
+    const { gameState, gameError } = useGameplay();
 
     if (!user)
     {
@@ -15,9 +18,26 @@ function Matchmaking()
         );
     }
 
+    if (gameState)
+    {
+        return (
+            <div className="matchmaking">
+                <ChessBoard />
+            </div>
+        );
+    }
+
     if (match)
     {
-        return <div className="matchmaking">Found match: {match}</div>;
+        return (
+            <div className="matchmaking">
+                <div className="connecting">
+                    <p>Connecting to game...</p>
+                    <div className="loading-spinner"></div>
+                    {(error || gameError) && <p className="error-message">{error || gameError}</p>}
+                </div>
+            </div>
+        );
     }
 
     return (

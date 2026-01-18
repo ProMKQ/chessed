@@ -13,6 +13,11 @@ export default defineConfig({
                 target: "http://localhost:3001",
                 changeOrigin: true,
             },
+            "/game": {
+                target: "ws://localhost:3001",
+                changeOrigin: true,
+                ws: true,
+            },
         },
     },
 });
