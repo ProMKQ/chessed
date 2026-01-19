@@ -10,7 +10,7 @@ export function calculateNewRating(playerRating: number, opponentRating: number,
 {
     const expected = expectedScore(playerRating, opponentRating);
     const newRating = playerRating + K_FACTOR * (actualScore - expected);
-    return Math.round(newRating);
+    return Math.ceil(newRating);
 }
 
 export function calculateEloChanges(
