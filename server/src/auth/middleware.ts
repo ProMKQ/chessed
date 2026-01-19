@@ -36,7 +36,6 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
     if (!userId)
     {
         res.status(401).json({ error: "Not authenticated" });
-        return;
     }
 
     const user = await findUserById(userId);
