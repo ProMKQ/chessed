@@ -14,7 +14,8 @@
         "format": "prettier --write \"**/*.{js,ts,json}\"",
         "format:check": "prettier --check \"**/*.{js,ts,json}\"",
         "test": "vitest run",
-        "test:watch": "vitest"
+        "test:watch": "vitest",
+        "test:e2e": "tsx src/__tests__/e2e.ts"
     },
     "dependencies": {
         "better-sqlite3": "^12.6.2",

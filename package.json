@@ -17,6 +17,7 @@
         "format:check": "npm run format:check --workspaces",
         "test": "npm run test -w server",
         "test:watch": "npm run test:watch -w server",
+        "test:e2e": "npm run test:e2e -w server",
         "prepare": "husky"
     },
     "devDependencies": {
