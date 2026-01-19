@@ -54,7 +54,7 @@ router.post("/register", authLimiter, async (req: Request, res: Response): Promi
     const user = await createUser(username, password);
     req.session.userId = user.id;
 
-    res.status(201).json({ success: true });
+    res.status(200).json({ success: true });
 });
 
 router.post("/login", authLimiter, async (req: Request, res: Response): Promise<void> =>
