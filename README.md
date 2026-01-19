@@ -40,3 +40,12 @@ The fourth mutation test shows that gameplay logic lacks test coverage.
 This can be fixed if the final E2E test plays out the fool's mate instead of resigning. 
 However, testing game logic is not a priority, as the project relies on chess.js, which has its own tests for that.
 Much more important would be to add some tests that cover player disconnection and reconnection behavior.
+
+---
+
+## Performance
+### Lighthouse benchmark results
+> Incognito mode has been used to disable all extensions so they dont interfere with the measurements
+<img width="2559" height="1526" alt="lighthouse" src="https://github.com/user-attachments/assets/3368f6b0-dadf-4ab4-b771-7f1ddde53cee" />
+<img width="787" height="397" alt="lighthouse-metrics" src="https://github.com/user-attachments/assets/164f927d-80af-4482-a746-83685de3c53f" />
+
