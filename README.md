@@ -21,3 +21,22 @@ A real-time multiplayer chess website with automatic matchmaking
 
 ### ER diagram:
 ![image](https://github.com/user-attachments/assets/bed1f578-b46c-46fe-84bd-6d061463b9a8)
+
+---
+
+## Tests
+
+Unit tests in `elo.test.ts` cover ELO rating calculations (and their symmetry) across various ratings and edge cases.
+E2E tests in `e2e.ts` cover user registration, login, logout, session management, username and password validation, 
+matchmaking, game connection and termination via resignation with ELO updates.
+
+Four mutation tests were conducted with GitHub CI and pull requests:
+1. Rounding mode change in ELO calculation was detected by unit tests. 
+2. Missing return statement in auth middleware was detected thanks to TypeScript type checking.
+3. Registration endpoint status code typo was detected by E2E tests. 
+4. Inversion of the winner color on checkmate was not detected because E2E tests don't go through the checkmate code path.
+
+The fourth mutation test shows that gameplay logic lacks test coverage.
+This can be fixed if the final E2E test plays out the fool's mate instead of resigning. 
+However, testing game logic is not a priority, as the project relies on chess.js, which has its own tests for that.
+Much more important would be to add some tests that cover player disconnection and reconnection behavior.
