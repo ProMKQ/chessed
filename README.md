@@ -49,3 +49,12 @@ Much more important would be to add some tests that cover player disconnection a
 <img width="2559" height="1526" alt="lighthouse" src="https://github.com/user-attachments/assets/3368f6b0-dadf-4ab4-b771-7f1ddde53cee" />
 <img width="787" height="397" alt="lighthouse-metrics" src="https://github.com/user-attachments/assets/164f927d-80af-4482-a746-83685de3c53f" />
 
+### Server profiling
+[benchmark.ts](server/src/benchmark.ts) simulates server load by spawning sessions in random batches, which register accounts, 
+find matches, connect to games and resign after a delay.
+
+[profiling-results.txt](server/profiling-results.txt)
+Running server with `--prof` showed that 87% of CPU time is spent in `pbkdf2Sync` during account registration.
+
+This can be fixed by making hashing async, so it doesn't block the event loop.
+Or, alternatively, by changing the hashing algorithm itself, but that has security tradeoffs.
