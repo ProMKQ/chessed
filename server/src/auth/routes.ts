@@ -68,7 +68,14 @@ router.post("/login", authLimiter, async (req: Request, res: Response): Promise<
     }
 
     const user = await findUserByUsername(username);
-    if (!user || !verifyPassword(user, password))
+    if (!user)
+    {
+        res.status(401).json({ error: "Invalid username or password" });
+        return;
+    }
+
+    const valid = await verifyPassword(user, password);
+    if (!valid)
     {
         res.status(401).json({ error: "Invalid username or password" });
         return;

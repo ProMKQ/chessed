@@ -58,3 +58,5 @@ Running server with `--prof` showed that 87% of CPU time is spent in `pbkdf2Sync
 
 This can be fixed by making hashing async, so it doesn't block the event loop.
 Or, alternatively, by changing the hashing algorithm itself, but that has security tradeoffs.
+
+The project does so little db queries, that it is not worth it to analyze them.

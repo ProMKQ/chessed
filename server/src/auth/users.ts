@@ -17,14 +17,40 @@ const ITERATIONS = 100000;
 const KEY_LENGTH = 64;
 const DIGEST = "sha512";
 
-function hashPassword(password: string, salt: string): string
+async function hashPassword(password: string, salt: string): Promise<string>
 {
-    return crypto.pbkdf2Sync(password, salt, ITERATIONS, KEY_LENGTH, DIGEST).toString("hex");
+    return new Promise((resolve, reject) =>
+    {
+        crypto.pbkdf2(password, salt, ITERATIONS, KEY_LENGTH, DIGEST, (err, hash) =>
+        {
+            if (err)
+            {
+                reject(err);
+            }
+            else
+            {
+                resolve(hash.toString("hex"));
+            }
+        });
+    });
 }
 
-function generateSalt(): string
+async function generateSalt(): Promise<string>
 {
-    return crypto.randomBytes(16).toString("hex");
+    return new Promise((resolve, reject) =>
+    {
+        crypto.randomBytes(16, (err, buf) =>
+        {
+            if (err)
+            {
+                reject(err);
+            }
+            else
+            {
+                resolve(buf.toString("hex"));
+            }
+        });
+    });
 }
 
 function entityToUser(entity: UserEntity): User
@@ -55,8 +81,8 @@ export async function findUserById(id: string): Promise<User | undefined>
 export async function createUser(username: string, plainPassword: string): Promise<User>
 {
     const id = uuidv4();
-    const salt = generateSalt();
-    const password = hashPassword(plainPassword, salt);
+    const salt = await generateSalt();
+    const password = await hashPassword(plainPassword, salt);
 
     const repo = getUserRepository();
     const entity = repo.create({
@@ -71,9 +97,9 @@ export async function createUser(username: string, plainPassword: string): Promi
     return entityToUser(entity);
 }
 
-export function verifyPassword(user: User, plainPassword: string): boolean
+export async function verifyPassword(user: User, plainPassword: string): Promise<boolean>
 {
-    const hash = hashPassword(plainPassword, user.salt);
+    const hash = await hashPassword(plainPassword, user.salt);
     return crypto.timingSafeEqual(Buffer.from(user.password, "hex"), Buffer.from(hash, "hex"));
 }
 

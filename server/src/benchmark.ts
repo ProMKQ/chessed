@@ -133,9 +133,10 @@ class BenchmarkSession
                 errorCount++;
                 return false;
             }
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }
-        catch (error: any)
+        catch (
+            error: any // eslint-disable-line @typescript-eslint/no-explicit-any
+        )
         {
             errorCount++;
             log(error);
@@ -150,9 +151,10 @@ class BenchmarkSession
             await this.httpRequest("POST", "/api/auth/logout");
 
             this.cookie = null;
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }
-        catch (error: any)
+        catch (
+            error: any // eslint-disable-line @typescript-eslint/no-explicit-any
+        )
         {
             errorCount++;
             log(error);
@@ -217,9 +219,10 @@ class BenchmarkSession
                                             reject(new Error("Matchmaking timed out or cancelled"));
                                         }
                                     }
-                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                 }
-                                catch (error: any)
+                                catch (
+                                    error: any // eslint-disable-line @typescript-eslint/no-explicit-any
+                                )
                                 {
                                     errorCount++;
                                     log(error);
@@ -383,9 +386,10 @@ class BenchmarkSession
                             gameCount++;
                             tryResolve();
                         }
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     }
-                    catch (error: any)
+                    catch (
+                        error: any // eslint-disable-line @typescript-eslint/no-explicit-any
+                    )
                     {
                         errorCount++;
                         log(error);
@@ -399,9 +403,10 @@ class BenchmarkSession
             });
 
             await delay(500);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }
-        catch (error: any)
+        catch (
+            error: any // eslint-disable-line @typescript-eslint/no-explicit-any
+        )
         {
             errorCount++;
             log(error);
@@ -432,9 +437,10 @@ class BenchmarkSession
                 try
                 {
                     await this.playGame(await this.findGame());
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 }
-                catch (error: any)
+                catch (
+                    error: any // eslint-disable-line @typescript-eslint/no-explicit-any
+                )
                 {
                     errorCount++;
                     log(error);
@@ -452,9 +458,10 @@ class BenchmarkSession
             }
 
             await this.logout();
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }
-        catch (error: any)
+        catch (
+            error: any // eslint-disable-line @typescript-eslint/no-explicit-any
+        )
         {
             errorCount++;
             log(error);
