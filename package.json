@@ -16,6 +16,7 @@
         "format": "npm run format --workspaces",
         "format:check": "npm run format:check --workspaces",
         "test": "npm run test -w server",
+        "test:watch": "npm run test:watch -w server",
         "prepare": "husky"
     },
     "devDependencies": {
