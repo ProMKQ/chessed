@@ -1,6 +1,8 @@
 import { v4 as uuidv4 } from "uuid";
 import crypto from "crypto";
 import { DEFAULT_ELO } from "../elo/elo.js";
+import { getUserRepository } from "../database/dataSource.js";
+import { UserEntity } from "../database/entities/User.js";
 
 export interface User
 {
@@ -25,24 +27,29 @@ function generateSalt(): string
     return crypto.randomBytes(16).toString("hex");
 }
 
-const users: Map<string, User> = new Map();
+function entityToUser(entity: UserEntity): User
+{
+    return {
+        id: entity.id,
+        username: entity.username,
+        password: entity.password,
+        salt: entity.salt,
+        elo: entity.elo,
+    };
+}
 
 export async function findUserByUsername(username: string): Promise<User | undefined>
 {
-    for (const id in users)
-    {
-        const user = users.get(id);
-        if (user && user.username === username)
-        {
-            return user;
-        }
-    }
-    return undefined;
+    const repo = getUserRepository();
+    const entity = await repo.findOne({ where: { username } });
+    return entity ? entityToUser(entity) : undefined;
 }
 
 export async function findUserById(id: string): Promise<User | undefined>
 {
-    return users.get(id);
+    const repo = getUserRepository();
+    const entity = await repo.findOne({ where: { id } });
+    return entity ? entityToUser(entity) : undefined;
 }
 
 export async function createUser(username: string, plainPassword: string): Promise<User>
@@ -51,16 +58,17 @@ export async function createUser(username: string, plainPassword: string): Promi
     const salt = generateSalt();
     const password = hashPassword(plainPassword, salt);
 
-    const user: User = {
+    const repo = getUserRepository();
+    const entity = repo.create({
         id,
         username,
         password,
         salt,
         elo: DEFAULT_ELO,
-    };
-    users.set(id, user);
+    });
+    await repo.save(entity);
 
-    return user;
+    return entityToUser(entity);
 }
 
 export function verifyPassword(user: User, plainPassword: string): boolean
@@ -80,12 +88,7 @@ export function getUserPublicInfo(user: User)
 
 export async function updateUserElo(userId: string, newElo: number): Promise<boolean>
 {
-    const user = users.get(userId);
-    if (!user)
-    {
-        return false;
-    }
-    user.elo = newElo;
-    users.set(userId, user);
-    return true;
+    const repo = getUserRepository();
+    const result = await repo.update({ id: userId }, { elo: newElo });
+    return result.affected !== undefined && result.affected > 0;
 }

@@ -3,6 +3,7 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { createServer } from "http";
+import { initializeDatabase } from "./database/dataSource.js";
 import authRoutes from "./auth/routes.js";
 import { sessionMiddleware } from "./auth/middleware.js";
 import matchmakingRoutes from "./matchmaking/routes.js";
@@ -58,6 +59,13 @@ if (NODE_ENV === "production")
 
 const httpServer = createServer(app);
 initializeGameplayWebSocket(httpServer);
+
+const dbInitialized = await initializeDatabase();
+if (!dbInitialized)
+{
+    console.error("Failed to initialize database, exiting");
+    process.exit(1);
+}
 
 httpServer.listen(PORT, () =>
 {

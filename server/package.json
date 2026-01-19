@@ -16,22 +16,28 @@
         "test": "vitest run"
     },
     "dependencies": {
+        "better-sqlite3": "^12.6.2",
         "chess.js": "^1.0.0-beta.8",
         "cookie": "^1.1.1",
         "cors": "^2.8.5",
         "express": "^5.1.0",
         "express-rate-limit": "^7.5.0",
         "express-session": "^1.18.1",
+        "pg": "^8.17.1",
+        "reflect-metadata": "^0.2.2",
+        "typeorm": "^0.3.26",
         "uuid": "^11.1.0",
         "ws": "^8.19.0"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.1",
+        "@types/better-sqlite3": "^7.6.13",
         "@types/cookie": "^0.6.0",
         "@types/cors": "^2.8.19",
         "@types/express": "^5.0.0",
         "@types/express-session": "^1.18.2",
         "@types/node": "^20.17.57",
+        "@types/pg": "^8.16.0",
         "@types/uuid": "^10.0.0",
         "@types/ws": "^8.18.1",
         "eslint": "^9.39.1",
@@ -39,7 +45,8 @@
         "prettier": "^3.5.3",
         "tsx": "^4.20.3",
         "typescript": "~5.9.3",
-        "typescript-eslint": "^8.46.4"
+        "typescript-eslint": "^8.46.4",
+        "vitest": "^4.0.17"
     },
     "engines": {
         "node": ">=20.0.0"

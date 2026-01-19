@@ -2,6 +2,7 @@ import { WebSocket } from "ws";
 import { Chess, type Move } from "chess.js";
 import { findUserById, updateUserElo } from "../auth/users.js";
 import { calculateEloChanges, DEFAULT_ELO } from "../elo/elo.js";
+import { storeGame, type StoredGame } from "../elo/games.js";
 
 export type GameResult =
     | { type: "checkmate"; winner: "white" | "black" }
@@ -333,6 +334,13 @@ async function endGame(session: GameSession, result: GameResult): Promise<void>
 
     await updateUserElo(session.player1.userId, eloChanges.whiteNewRating);
     await updateUserElo(session.player2.userId, eloChanges.blackNewRating);
+
+    const storedGame: StoredGame = {
+        whiteUserId: session.player1.userId,
+        blackUserId: session.player2.userId,
+        result,
+    };
+    await storeGame(storedGame);
 
     const baseMessage = {
         type: "game_over",
