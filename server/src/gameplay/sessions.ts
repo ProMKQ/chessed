@@ -288,7 +288,7 @@ function checkGameOver(session: GameSession): GameResult | null
 
     if (chess.isCheckmate())
     {
-        const winner = chess.turn() === "w" ? "black" : "white";
+        const winner = chess.turn() === "w" ? "white" : "black";
         return { type: "checkmate", winner };
     }
 
